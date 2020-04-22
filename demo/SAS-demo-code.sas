@@ -34,7 +34,7 @@ run;
 /*Create controls dataset who are in the same league, division and plays at same position but times at bat (natbat) is less than 500*/ 
 proc sql;
 	create table control_dtset as
-	select a.*, 
+	select distinct a.*, 
 		   0 as is_case
 	from population_dtset a
 		, case_dtset b
