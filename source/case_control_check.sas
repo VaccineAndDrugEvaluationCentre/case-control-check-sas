@@ -33,7 +33,7 @@ This macro will create a text file with following columns:
 * v1.0.0; Gurpreet Pabla, July 2017; Initial version
 
 # Limitations
-	This macro works only in the windows environment as it use "pipe" statement.
+	This macro works only in the windows environment using Base SAS or SAS Enterprise Guide as it use "pipe" statement.
 	
 Copyright (c) 2016 Vaccine and Drug Evaluation Centre, Winnipeg. All rights reserved.
 
@@ -69,9 +69,9 @@ Copyright (c) 2016 Vaccine and Drug Evaluation Centre, Winnipeg. All rights rese
 			%end;
 			
 			/*Find the name of latest previous file*/
-			filename _temp_prev_fl pipe "dir &file_location.\&filename_prefix.*.txt /od /t:w /b";
+			filename temp_prev_fl pipe "dir &file_location.\&filename_prefix.*.txt /od /t:w /b";
 			data _null_;
-				infile _temp_prev_fl ;
+				infile temp_prev_fl ;
 				input;
 				call symputx('latest',_infile_);
 			run;
@@ -150,10 +150,10 @@ Copyright (c) 2016 Vaccine and Drug Evaluation Centre, Winnipeg. All rights rese
 
 	%if &macro_num = 1 or &prev_fl_flag = 1 or &curr_macro_num_flag = 1 %then %do;
 		%if &curr_macro_num_flag=0 %then %do;
-			filename _temp_out "&file_location.\&filename_prefix._%sysfunc(today(),date7.)%sysfunc(compress(%sysfunc(time(),time8.),:)).txt";
+			filename temp_out "&file_location.\&filename_prefix._%sysfunc(today(),date7.)%sysfunc(compress(%sysfunc(time(),time8.),:)).txt";
 		%end;
 		data _null_;
-		file _temp_out;
+		file temp_out;
 		put @1	"Dataset" 
 			@50 "|"
 			@51	"No. of cases"
@@ -196,7 +196,7 @@ Copyright (c) 2016 Vaccine and Drug Evaluation Centre, Winnipeg. All rights rese
 			
 			data _null_;
 			set _temp_prev_fl;
-			file _temp_out mod;
+			file temp_out mod;
 			put @1	dataset_name 
 				@50 "|"
 				@51	cases
@@ -228,7 +228,7 @@ Copyright (c) 2016 Vaccine and Drug Evaluation Centre, Winnipeg. All rights rese
 	quit;
 
 	data _null_;
-		file _temp_out mod;
+		file temp_out mod;
 		cases = &&_n_cases_&filename_prefix._&macro_num;
 		changed_cases = &_num_cases_changed;
 		duplicates_in_cases = &&_num_dup_cases_&macro_num.;
